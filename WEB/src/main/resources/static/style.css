@@ -1,0 +1,539 @@
+/* --- ЗМІННІ --- */
+:root {
+    --bg-dark: #1e1e1e;       /* Основний фон */
+    --bg-card: #2d2d2d;       /* Фон карток і сайдбару */
+    --accent-red: #e74c3c;    /* Червоний як на сайті */
+    --accent-green: #27ae60;  /* Зелений для кнопки */
+    --text-main: #ecf0f1;     /* Білий текст */
+    --text-muted: #95a5a6;    /* Сірий текст */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* --- ШАПКА --- */
+.header {
+    background-color: #242424;
+    border-bottom: 1px solid #333;
+    padding: 15px 0;
+    margin-bottom: 30px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo-box {
+    background-color: var(--accent-red);
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: white;
+}
+
+.text-red { color: var(--accent-red); }
+
+.search-bar {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+    display: flex;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    border-right: none;
+    color: white;
+    border-radius: 4px 0 0 4px;
+}
+
+.search-bar button {
+    background-color: #333;
+    border: 1px solid #444;
+    color: #888;
+    padding: 0 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.auth-buttons button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.btn-login { background: transparent; color: #ccc; }
+.btn-register { background-color: var(--accent-green); color: white; }
+
+/* --- МАКЕТ --- */
+.main-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.content { flex: 3; }
+.sidebar { flex: 1; min-width: 300px; }
+
+/* --- СЕКЦІЯ ФІЛЬМІВ --- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.section-header h2 { margin: 0; font-size: 22px; }
+
+.filters button {
+    background: #333;
+    border: none;
+    color: #ccc;
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.filters button.active {
+    background: var(--accent-red);
+    color: white;
+}
+
+/* --- СІТКА КАРТОК --- */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background-color: var(--bg-card);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+/* --- Додай цей блок до існуючого CSS --- */
+
+/* Кнопки в картці */
+.card-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.btn-action {
+    flex: 1;
+    border: 1px solid #444;
+    padding: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+    background: transparent;
+    color: #ccc;
+}
+
+.btn-edit:hover {
+    background-color: #f39c12; /* Помаранчевий */
+    border-color: #f39c12;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #e74c3c; /* Червоний */
+    border-color: #e74c3c;
+    color: white;
+}
+
+/* Кнопка скасування у формі */
+.btn-cancel {
+    width: 100%;
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.btn-cancel:hover {
+    background-color: #777;
+}
+
+/* --- Решта CSS залишається як була в попередньому варіанті --- */
+/* (Скопіюй сюди повний попередній CSS, якщо потрібно, але головне - додай .card-actions) */
+/* --- ЗМІННІ --- */
+:root {
+    --bg-dark: #1e1e1e;
+    --bg-card: #2d2d2d;
+    --accent-red: #e74c3c;
+    --accent-green: #27ae60;
+    --text-main: #ecf0f1;
+    --text-muted: #95a5a6;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* --- ШАПКА --- */
+.header {
+    background-color: #242424;
+    border-bottom: 1px solid #333;
+    padding: 15px 0;
+    margin-bottom: 30px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.logo-box {
+    background-color: var(--accent-red);
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: white;
+}
+
+.text-red { color: var(--accent-red); }
+
+/* --- НАВІГАЦІЯ (НОВЕ) --- */
+.nav-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: white;
+    background-color: #333;
+}
+
+/* --- МАКЕТ --- */
+.main-layout { display: flex; gap: 30px; }
+.content { flex: 3; }
+.sidebar { flex: 1; min-width: 300px; }
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.section-header h2 { margin: 0; font-size: 22px; }
+
+/* --- СІТКА ФІЛЬМІВ --- */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+/* ... стилі movie-card (залиш ті ж самі, що були) ... */
+
+/* --- СІТКА КОРИСТУВАЧІВ (НОВЕ) --- */
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.user-card {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.user-card:hover { transform: translateY(-5px); }
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #444;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid var(--accent-red);
+}
+
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.user-info h4 { margin: 0 0 5px 0; color: white; font-size: 18px; }
+.user-info p { margin: 0; color: var(--text-muted); font-size: 13px; }
+
+/* --- КНОПКИ В КАРТЦІ (ВИПРАВЛЕНО) --- */
+
+/* --- ВИПРАВЛЕННЯ КНОПОК --- */
+
+.card-actions {
+    display: flex !important;          /* Примусово вмикаємо Flexbox */
+    flex-direction: row !important;    /* Тільки в рядок */
+    justify-content: space-between !important;
+    gap: 10px !important;              /* Відступ 10px */
+    width: 100% !important;            /* На всю ширину картки */
+    margin-top: 15px;
+    box-sizing: border-box;
+}
+
+.btn-action {
+    flex: 1 1 0px !important;          /* Розтягує кнопки рівномірно (магія 50/50) */
+    width: 100% !important;            /* Заповнює свій шматок */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    height: 36px !important;           /* Фіксована висота кнопок */
+    padding: 0 !important;             /* Прибираємо зайві відступи */
+
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #2d2d2d;         /* Темний фон */
+    color: #ccc;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s all;
+}
+
+/* Кольори при наведенні */
+.btn-edit:hover {
+    background-color: #f39c12 !important;
+    border-color: #f39c12 !important;
+    color: white !important;
+}
+
+.btn-delete:hover {
+    background-color: #e74c3c !important;
+    border-color: #e74c3c !important;
+    color: white !important;
+}
+/* --- САЙДБАР (ВІДЖЕТИ) --- */
+.widget { background-color: var(--bg-card); margin-bottom: 20px; border-radius: 4px; }
+.widget-header { background-color: #333; padding: 10px 15px; border-radius: 4px 4px 0 0; }
+.widget-header h3 { margin: 0; font-size: 16px; color: #ddd; }
+.widget-body { padding: 15px; }
+
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.widget input, .widget textarea {
+    width: 100%; background-color: #1e1e1e; border: 1px solid #444; color: white; padding: 8px; border-radius: 3px; box-sizing: border-box;
+}
+.widget input:focus { border-color: var(--accent-red); outline: none; }
+
+.btn-submit { width: 100%; background-color: var(--accent-green); color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 3px; }
+.btn-submit:hover { background-color: #219150; }
+
+.btn-cancel { width: 100%; background-color: #555; color: white; border: none; padding: 8px; margin-top: 10px; cursor: pointer; border-radius: 3px; }
+.loading { text-align: center; color: #888; padding: 20px; }
+.movie-card:hover {
+    transform: translateY(-5px);
+    z-index: 2;
+}
+
+.poster-wrapper {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+}
+/* --- Стилі для валідації --- */
+.input-error {
+    border-color: #e74c3c !important; /* Червона рамка */
+    background-color: #3e2b2b !important; /* Легкий червоний фон */
+}
+
+
+.error-message {
+    color: #e74c3c;
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
+    font-weight: bold;
+}
+
+.poster-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Червона плашка рейтингу (як на скріні) */
+.rating-badge {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    background-color: var(--accent-red);
+    color: white;
+    padding: 3px 8px;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.movie-info {
+    padding: 10px;
+}
+
+.movie-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+}
+
+.movie-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-delete {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #444;
+    color: #e74c3c;
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-delete:hover { background: #e74c3c; color: white; border-color: #e74c3c; }
+
+/* --- САЙДБАР (ВІДЖЕТИ) --- */
+.widget {
+    background-color: var(--bg-card);
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.widget-header {
+    background-color: #333;
+    padding: 10px 15px;
+    border-radius: 4px 4px 0 0;
+}
+
+.widget-header h3 { margin: 0; font-size: 16px; color: #ddd; }
+
+.widget-body { padding: 15px; }
+
+/* Форма */
+.form-group { margin-bottom: 12px; }
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.widget input, .widget textarea {
+    width: 100%;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.widget input:focus { border-color: var(--accent-red); outline: none; }
+
+.btn-submit {
+    width: 100%;
+    background-color: var(--accent-green);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.btn-submit:hover { background-color: #219150; }
+
+/* Статистика */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.stat-item .white { color: white; font-weight: bold; }
+.stat-item:last-child { border-bottom: none; }
+
+.loading { text-align: center; color: #888; padding: 20px; }

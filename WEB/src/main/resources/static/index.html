@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yummy Cinema - Фільми</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+        <a href="index.html" class="logo">
+            <span class="logo-box">YC</span>
+            <span class="logo-text">YUMMY <span class="text-red">CINEMA</span></span>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link active"><i class="fa-solid fa-film"></i> Фільми</a>
+            <a href="users.html" class="nav-link"><i class="fa-solid fa-users"></i> Користувачі</a>
+        </nav>
+
+        <div class="auth-buttons">
+            <button class="btn-submit" style="width: auto; padding: 5px 15px;">Admin</button>
+        </div>
+    </div>
+</header>
+
+<div class="container main-layout">
+    <main class="content">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-film text-red"></i> Каталог фільмів</h2>
+        </div>
+        <div id="loading" class="loading">Завантаження...</div>
+        <div id="moviesGrid" class="movies-grid"></div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="widget">
+            <div class="widget-header">
+                <h3 id="formTitle"><i class="fa-solid fa-plus-circle"></i> Додати фільм</h3>
+            </div>
+            <div class="widget-body">
+                <form id="movieForm">
+                    <input type="hidden" id="movieId">
+                    <div class="form-group">
+                        <label>Назва</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Рік</label>
+                        <input type="number" id="releaseYear" required value="2024">
+                    </div>
+                    <div class="form-group">
+                        <label>Рейтинг</label>
+                        <input type="number" id="rating" required step="0.1" value="8.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Озвучка</label>
+                        <input type="text" id="voiceovers" required placeholder="Укр, Eng">
+                    </div>
+                    <div class="form-group">
+                        <label>Опис</label>
+                        <textarea id="description" rows="2"></textarea>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn-submit">ЗБЕРЕГТИ</button>
+                    <button type="button" id="cancelBtn" class="btn-cancel" style="display: none;">СКАСУВАТИ</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

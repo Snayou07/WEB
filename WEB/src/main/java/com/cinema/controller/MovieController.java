@@ -36,21 +36,30 @@ public class MovieController {
     }
 
     @PostMapping
-    @Operation(summary = "Додати фільм")
-    @CacheEvict(value = "movies", allEntries = true) // <--- Очистити кеш при зміні даних
-    public ResponseEntity<Movie> create(@Valid @RequestBody MovieDto dto) {
-        log.info("Спроба створити фільм: {}", dto.getTitle());
+    @Operation(summary = "Додати новий фільм")
+    // Додаємо `?` щоб повертати або Movie, або Map з помилками
+    public ResponseEntity<?> create(@Valid @RequestBody MovieDto dto) {
+        // РУЧНА ПЕРЕВІРКА НА ДУБЛІКАТИ
+        if (repo.existsByTitle(dto.getTitle())) {
+            // Формуємо JSON помилку: {"title": "текст помилки"}
+            return ResponseEntity.badRequest().body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
+        }
+
         Movie movie = new Movie(null, dto.getTitle(), dto.getDescription(),
                 dto.getReleaseYear(), dto.getRating(), dto.getAvailableVoiceovers());
         return ResponseEntity.ok(repo.save(movie));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Оновити фільм")
-    @CacheEvict(value = "movies", allEntries = true) // <--- Очистити кеш
-    public ResponseEntity<Movie> update(@PathVariable Long id, @Valid @RequestBody MovieDto dto) {
-        log.info("Оновлення фільму з ID: {}", id);
+    @Operation(summary = "Оновити дані фільму")
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody MovieDto dto) {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
+
+        // Перевірка: чи зайнята така назва іншим фільмом?
+        if (repo.existsByTitleAndIdNot(dto.getTitle(), id)) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
+        }
+
         Movie movie = new Movie(id, dto.getTitle(), dto.getDescription(),
                 dto.getReleaseYear(), dto.getRating(), dto.getAvailableVoiceovers());
         return ResponseEntity.ok(repo.save(movie));

@@ -6,90 +6,81 @@ import com.cinema.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j; // <--- 1. Логування
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "User API", description = "API для керування користувачами")
-@Slf4j // Активує логер 'log'
+@Tag(name = "User API")
+@Slf4j
 public class UserController {
 
     @Autowired
     private UserRepository repo;
 
-    // 2. Впроваджуємо налаштування з файлу (окреме для юзерів)
-    @Value("${cinema.security.allow-user-delete:true}")
-    private boolean allowUserDelete;
-
     @GetMapping
-    @Operation(summary = "Отримати список всіх користувачів")
-    @Cacheable("users") // <--- 3. Результат зберігається в кеш "users"
     public List<User> getAll() {
-        log.info("Виклик getAll(): Отримання списку користувачів із БД");
         return repo.findAll();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Отримати користувача за ID")
     public ResponseEntity<User> getById(@PathVariable Long id) {
-        log.info("Виклик getById(): пошук користувача з ID {}", id);
-        return repo.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @Operation(summary = "Створити нового користувача")
-    @CacheEvict(value = "users", allEntries = true) // <--- Очищаємо кеш при додаванні
-    public ResponseEntity<User> create(@Valid @RequestBody UserDto dto) {
-        log.info("Виклик create(): реєстрація нового користувача '{}'", dto.getUsername());
+    public ResponseEntity<?> create(@Valid @RequestBody UserDto dto) {
+        // РУЧНА ПЕРЕВІРКА НА ДУБЛІКАТИ
+        Map<String, String> errors = new HashMap<>();
+
+        if (repo.existsByUsername(dto.getUsername())) {
+            errors.put("username", "Цей нікнейм вже зайнятий!");
+        }
+        if (repo.existsByEmail(dto.getEmail())) {
+            errors.put("email", "Ця пошта вже використовується!");
+        }
+
+        // Якщо є помилки - повертаємо їх (код 400 Bad Request)
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
 
         User user = new User(null, dto.getUsername(), dto.getEmail(), LocalDate.now());
         return ResponseEntity.ok(repo.save(user));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Оновити користувача за ID")
-    @CacheEvict(value = "users", allEntries = true) // <--- Очищаємо кеш при зміні
-    public ResponseEntity<User> update(@PathVariable Long id, @Valid @RequestBody UserDto dto) {
-        log.info("Виклик update(): оновлення даних користувача ID {}", id);
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody UserDto dto) {
+        if (!repo.existsById(id)) return ResponseEntity.notFound().build();
 
-        if (!repo.existsById(id)) {
-            log.warn("Помилка оновлення: користувача ID {} не знайдено", id);
-            return ResponseEntity.notFound().build();
+        // Перевірка дублікатів (виключаючи поточного юзера)
+        Map<String, String> errors = new HashMap<>();
+
+        if (repo.existsByUsernameAndIdNot(dto.getUsername(), id)) {
+            errors.put("username", "Цей нікнейм вже зайнятий іншим користувачем!");
+        }
+        if (repo.existsByEmailAndIdNot(dto.getEmail(), id)) {
+            errors.put("email", "Ця пошта вже зайнята!");
         }
 
-        // Зверни увагу: дату реєстрації залишаємо новою або беремо стару (тут спрощено)
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        // Оновлення (дату реєстрації залишаємо стару, тут спрощено ставимо нову або шукаємо стару в БД)
         User user = new User(id, dto.getUsername(), dto.getEmail(), LocalDate.now());
         return ResponseEntity.ok(repo.save(user));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Видалити користувача за ID")
-    @CacheEvict(value = "users", allEntries = true) // <--- Очищаємо кеш при видаленні
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        // Перевірка дозволу на видалення (з файлу конфігурації)
-        if (!allowUserDelete) {
-            log.warn("Спроба видалення користувача ID {} заблокована налаштуваннями", id);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        if (!repo.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        log.info("Виклик delete(): видалення користувача ID {}", id);
+    public void delete(@PathVariable Long id) {
         repo.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
