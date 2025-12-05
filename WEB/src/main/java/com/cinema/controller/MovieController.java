@@ -5,7 +5,7 @@ import com.cinema.model.Movie;
 import com.cinema.repository.MovieRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j; // <--- Для логування
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,64 +18,81 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/movies")
-@Slf4j // <--- 1. Ломбок створює логер автоматично
+@Slf4j
 public class MovieController {
 
     @Autowired private MovieRepository repo;
 
-    // 3. Впровадження конфігурації з файлу
     @Value("${cinema.security.allow-delete:true}")
     private boolean allowDelete;
 
     @GetMapping
     @Operation(summary = "Отримати всі фільми")
-    @Cacheable("movies") // <--- 2. Результат збережеться в кеш
+    @Cacheable("movies")
     public List<Movie> getAll() {
-        log.info("Отримання списку фільмів (із БД, якщо не в кеші)");
+        log.info("Отримання списку фільмів");
         return repo.findAll();
+    }
+
+    // ✅ ДОДАНО: Отримання одного фільму за ID
+    @GetMapping("/{id}")
+    @Operation(summary = "Отримати фільм за ID")
+    public ResponseEntity<Movie> getById(@PathVariable Long id) {
+        return repo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @Operation(summary = "Додати новий фільм")
-    // Додаємо `?` щоб повертати або Movie, або Map з помилками
+    @CacheEvict(value = "movies", allEntries = true)
     public ResponseEntity<?> create(@Valid @RequestBody MovieDto dto) {
-        // РУЧНА ПЕРЕВІРКА НА ДУБЛІКАТИ
         if (repo.existsByTitle(dto.getTitle())) {
-            // Формуємо JSON помилку: {"title": "текст помилки"}
-            return ResponseEntity.badRequest().body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
+            return ResponseEntity.badRequest()
+                    .body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
         }
 
         Movie movie = new Movie(null, dto.getTitle(), dto.getDescription(),
                 dto.getReleaseYear(), dto.getRating(), dto.getAvailableVoiceovers());
+
+        log.info("Додано новий фільм: {}", dto.getTitle());
         return ResponseEntity.ok(repo.save(movie));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Оновити дані фільму")
+    @CacheEvict(value = "movies", allEntries = true)
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody MovieDto dto) {
-        if (!repo.existsById(id)) return ResponseEntity.notFound().build();
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
 
-        // Перевірка: чи зайнята така назва іншим фільмом?
         if (repo.existsByTitleAndIdNot(dto.getTitle(), id)) {
-            return ResponseEntity.badRequest().body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
+            return ResponseEntity.badRequest()
+                    .body(java.util.Map.of("title", "Фільм з такою назвою вже існує!"));
         }
 
         Movie movie = new Movie(id, dto.getTitle(), dto.getDescription(),
                 dto.getReleaseYear(), dto.getRating(), dto.getAvailableVoiceovers());
+
+        log.info("Оновлено фільм ID {}: {}", id, dto.getTitle());
         return ResponseEntity.ok(repo.save(movie));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Видалити фільм")
-    @CacheEvict(value = "movies", allEntries = true) // <--- Очистити кеш
+    @CacheEvict(value = "movies", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        // 3. Перевірка конфігурації
         if (!allowDelete) {
-            log.warn("Спроба видалення відхилена налаштуваннями конфігурації");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
+            log.warn("Спроба видалення відхилена конфігурацією");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        log.info("Видалення фільму з ID: {}", id);
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        log.info("Видалено фільм ID: {}", id);
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
     }
