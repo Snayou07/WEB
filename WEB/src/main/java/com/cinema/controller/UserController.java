@@ -3,7 +3,6 @@ package com.cinema.controller;
 import com.cinema.dto.UserDto;
 import com.cinema.model.User;
 import com.cinema.repository.UserRepository;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
