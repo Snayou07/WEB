@@ -1,9 +1,6 @@
 package org.example.laba5kross.model;
 
-/**
- * Параметри пошуку, які задає користувач через інтерфейс.
- * Передається у сервіс парсингу.
- */
+
 public class SearchFilter {
 
     public enum Operator { LESS, EQUAL, GREATER }

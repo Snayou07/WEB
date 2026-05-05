@@ -8,15 +8,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * JavaFX Task для виконання парсингу в окремому потоці.
- *
- * Прогрес оновлюється через updateProgress() / updateMessage(),
- * які автоматично передають значення у FX Application Thread.
- *
- * Знайдені результати повідомляються через callback onGameFound —
- * UI-компонент сам вирішує, як їх відобразити.
- */
+
 public class SearchTask extends Task<Integer> {
 
     private final ParserService parser;

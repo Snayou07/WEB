@@ -2,10 +2,7 @@ package org.example.laba5kross.model;
 
 import javafx.beans.property.*;
 
-/**
- * Модель даних для настільної гри.
- * Використовує JavaFX Properties для автоматичного оновлення TableView.
- */
+
 public class Game {
 
     private final StringProperty name;

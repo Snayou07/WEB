@@ -7,11 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Сервіс файлових операцій.
- * Запис і читання CSV виконуються в окремих потоках (Task).
- * Клас не знає нічого про JavaFX UI.
- */
+
 public class FileService {
 
     private static final String CSV_HEADER =
@@ -20,13 +16,7 @@ public class FileService {
 
     // ── Запис ─────────────────────────────────────────────────────────────────
 
-    /**
-     * Зберігає список ігор у CSV-файл.
-     *
-     * @param games список ігор
-     * @param file  файл для запису
-     * @throws IOException якщо не вдалося записати
-     */
+
     public void writeCsv(List<Game> games, File file) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
@@ -59,13 +49,7 @@ public class FileService {
 
     // ── Читання ───────────────────────────────────────────────────────────────
 
-    /**
-     * Читає CSV-файл і повертає список ігор.
-     *
-     * @param file файл для читання
-     * @return список прочитаних ігор
-     * @throws IOException якщо не вдалося прочитати
-     */
+
     public List<Game> readCsv(File file) throws IOException {
         List<Game> result = new ArrayList<>();
 

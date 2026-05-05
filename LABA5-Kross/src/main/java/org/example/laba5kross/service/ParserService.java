@@ -11,16 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Сервіс парсингу сайтів магазинів настільних ігор.
- *
- * АРХІТЕКТУРА:
- *   parseAll()  — публічний метод, викликається з окремого потоку
- *   parseXxx()  — парсер кожного конкретного сайту
- *   fallback()  — демо-дані, якщо сайт недоступний (для офлайн-тесту)
- *
- * ВАЖЛИВО: цей клас НЕ є JavaFX-вузлом — він не знає нічого про UI.
- */
+
 public class ParserService {
 
     private static final int TIMEOUT_MS = 8_000;
@@ -36,13 +27,7 @@ public class ParserService {
 
     public String[] getSites() { return SITES; }
 
-    /**
-     * Парсить один сайт і повертає список знайдених ігор.
-     * Виклик із окремого потоку (Task).
-     *
-     * @param siteName назва магазину (відповідає елементу SITES[])
-     * @param filter   фільтр для відбору результатів
-     */
+
     public List<Game> parseSite(String siteName, SearchFilter filter) {
         return switch (siteName) {
             case "Ігромаг"   -> parseIhromah(filter);
@@ -199,14 +184,11 @@ public class ParserService {
 
     // ── Демо-дані (fallback якщо сайт недоступний / заблокований) ────────────
 
-    /**
-     * Генерує реалістичні тестові дані для демонстрації роботи застосунку.
-     * Використовується якщо реальний сайт недоступний.
-     */
+
     private List<Game> generateFallback(String site, SearchFilter filter) {
         Random rnd = new Random(site.hashCode());
         String[] allGames = {"Монополія", "Мафія", "Маджонг", "Го", "Рендзю", "Шахи", "Шашки"};
-        String[] langs     = {"UA", "UA/EN", "EN", "UA/RU"};
+        String[] langs     = {"UA", "UA/EN", "EN"};
         String[] diffs     = {"Легка", "Середня", "Складна"};
         String[] playerCounts = {"2", "2-4", "2-6", "2-8", "3-5", "4-8"};
 
